@@ -1,0 +1,25 @@
+openapi: 3.0.3
+info:
+  title: OrderService API
+  version: 1.0.0
+  description: API for create and manage OrderService
+x-ogen:
+  target: ./pkg/openapi/order/v1
+  package: order_v1
+  clean: true
+
+tags:
+  - name: Order
+    description: create and manage OrderService
+
+paths:
+  /api/v1/orders: # create new order
+    $ref: paths/orders.yaml
+  /api/v1/orders/{order_uuid}/pay: # pay for order by uid
+    $ref: paths/order_pay.yaml
+  /api/v1/orders/{order_uuid}: # show order by uuid
+    $ref: paths/order_by_uuid.yaml
+  /api/v1/orders/{order_uuid}/cancel: # cancel order by uuid (before payment)
+    $ref: paths/order_cancel.yaml
+
+
