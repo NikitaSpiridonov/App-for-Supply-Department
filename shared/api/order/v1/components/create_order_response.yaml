@@ -4,7 +4,7 @@ properties:
   order_uuid:
     type: string
     description: uuid of the current order
-    example: f47ac10b-58cc-4372-a567-0e02b2c3d479
+    example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
   total_price:
     type: number
     format: float

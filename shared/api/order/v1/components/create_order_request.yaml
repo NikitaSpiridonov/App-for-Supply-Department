@@ -4,7 +4,7 @@ properties:
   user_uuid:
     type: string
     description: user uuid
-    example:  f47ac10b-58cc-4372-a567-0e02b2c3d479
+    example:  "f47ac10b-58cc-4372-a567-0e02b2c3d479"
   part_uuids:
     type: array
     items:
