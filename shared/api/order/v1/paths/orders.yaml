@@ -1,0 +1,26 @@
+post:
+  summary: Create a new order by selected details
+  operationId: CreateNewOrder
+  tags:
+   - Order
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/create_order_request.yaml
+  responses:
+    '200':
+      description: The order created successfully
+      content:
+        application/json:
+          schema:
+            $href: ../components/create_order_response.yaml
+    '422':
+      description: The order can't be created because one of the detail is unavalable
+      content:
+        application/json:
+          schema:
+            $href: ../errors/unprocessable_entity_error.yaml
+    
+

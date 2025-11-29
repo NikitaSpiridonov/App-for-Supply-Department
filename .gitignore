@@ -32,6 +32,7 @@ go.work.sum
 node_modules
 /shared/api/bundles/
 /coverage/
+/.42c
 
 # Editor/IDE
 .idea/
