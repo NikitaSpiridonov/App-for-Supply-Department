@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package payment.v1;
+
+option go_package = "github.com/NikitaSpiridonov/App-for-Supply-Department/shared/pkg/proto/payment/v1;payment_v1";
+
+// PaymentService allows to pay for the order
+service PaymentService {
+    // PayOrder llows to pay for the order using one of the available payment methods
+    rpc PayOrder (PayOrderRequest) returns (PayOrderResponse);
+}
+
+enum PaymentMethod {
+    UNKNOWN = 0;
+    CARD = 1;
+    SBP = 2;
+    TRANSFER = 3;
+}
+
+message PayOrderRequest {
+    string order_uuid = 1;
+    string user_uuid = 2;
+    PaymentMethod payment_method = 3;
+}
+
+message PayOrderResponse {
+    string transaction_uuid = 1;
+}

@@ -1,7 +1,0 @@
-type: object
-required: true
-properties:
-  payment_method:
-    type: string
-    description: payment method of the order
-    example: "CARD"

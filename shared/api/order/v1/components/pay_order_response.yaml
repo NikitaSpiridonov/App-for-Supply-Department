@@ -1,7 +1,0 @@
-type: object
-required: true
-properties:
-  transaction_uuid:
-    type: string
-    description: uuid of current transaction
-    example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
