@@ -8,8 +8,19 @@ option go_package = "github.com/NikitaSpiridonov/App-for-Supply-Department/share
 service PaymentService {
     // PayOrder llows to pay for the order using one of the available payment methods
     rpc PayOrder (PayOrderRequest) returns (PayOrderResponse);
+    option (google.api.http) = {
+        post: "/api/v1/orders/{order_uuid}/pay"
+        body: "*"
+    }
 }
-
+message PaymentMethod {
+    enum Method {
+        UNKNOWN = 0;
+        CARD = 1;
+        SBP = 2;
+        TRANSFER = 3;
+    }
+}
 enum PaymentMethod {
     UNKNOWN = 0;
     CARD = 1;
