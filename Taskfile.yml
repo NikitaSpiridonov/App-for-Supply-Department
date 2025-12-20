@@ -2,11 +2,12 @@ version: '3'
 
 # Глобальные переменные проекта
 vars:
-  GO_VERSION: '1.25'
+  GO_VERSION: '1.25.1'
   GOLANGCI_LINT_VERSION: 'v2.1.5'
   GCI_VERSION: 'v0.13.6'
   GOFUMPT_VERSION: 'v0.8.0'
   OGEN_VERSION: 'v1.14.0'
+  BUF_VERSION: '1.53.0'
   PROTOC_GEN_GO_VERSION: 'v1.36.6'
   PROTOC_GEN_GO_GRPC_VERSION: 'v1.5.1'
 
@@ -14,6 +15,7 @@ vars:
   GOLANGCI_LINT: '{{.BIN_DIR}}/golangci-lint'
   GCI: '{{.BIN_DIR}}/gci'
   GOFUMPT: '{{.BIN_DIR}}/gofumpt'
+  BUF: '{{.BIN_DIR}}/buf'
   PROTOC_GEN_GO: '{{.BIN_DIR}}/protoc-gen-go'
   PROTOC_GEN_GO_GRPC: '{{.BIN_DIR}}/protoc-gen-go-grpc'
   OGEN: '{{.BIN_DIR}}/ogen'
@@ -123,6 +125,18 @@ tasks:
         done
         exit $ERR
 
+  install-buf:
+    desc: "Устанавливает Buf в каталог bin"
+    cmds:
+      - |
+        mkdir -p {{.BIN_DIR}}
+        [ -f {{.BUF}} ] || {
+          echo '📦 Устанавливаем buf {{.BUF_VERSION}}...'
+          GOBIN={{.BIN_DIR}} go install github.com/bufbuild/buf/cmd/buf@v{{.BUF_VERSION}}
+        }
+    status:
+      - test -x {{.BUF}}
+
   proto:install-plugins:
     desc: "Устанавливает protoc плагины в каталог bin"
     cmds:
@@ -139,7 +153,7 @@ tasks:
   proto:lint:
     deps: [ install-buf, proto:install-plugins ]
     desc: Проверка .proto-файлов на соответствие стилю
-    dir: proto
+    dir: shared/proto
     cmds:
       - '{{.BUF}} lint'
 
