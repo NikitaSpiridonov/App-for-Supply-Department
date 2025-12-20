@@ -6,12 +6,24 @@ vars:
   GOLANGCI_LINT_VERSION: 'v2.1.5'
   GCI_VERSION: 'v0.13.6'
   GOFUMPT_VERSION: 'v0.8.0'
+  OGEN_VERSION: 'v1.14.0'
+  PROTOC_GEN_GO_VERSION: 'v1.36.6'
+  PROTOC_GEN_GO_GRPC_VERSION: 'v1.5.1'
 
   BIN_DIR: '{{.ROOT_DIR}}/bin'
   GOLANGCI_LINT: '{{.BIN_DIR}}/golangci-lint'
   GCI: '{{.BIN_DIR}}/gci'
   GOFUMPT: '{{.BIN_DIR}}/gofumpt'
+  PROTOC_GEN_GO: '{{.BIN_DIR}}/protoc-gen-go'
+  PROTOC_GEN_GO_GRPC: '{{.BIN_DIR}}/protoc-gen-go-grpc'
+  OGEN: '{{.BIN_DIR}}/ogen'
   MODULES: assembly inventory order payment platform iam notification
+
+  OPEN_API_ORDER_V1_BUNDLE: '{{.ROOT_DIR}}/shared/openapi/order/v1/order.openapi.v1.yaml'
+  OPEN_API_FILES: '{{.ROOT_DIR}}/pkg/openapi/order/v1'
+
+
+  
 
 tasks:
   install-formatters:
@@ -110,3 +122,59 @@ tasks:
           fi
         done
         exit $ERR
+
+  proto:install-plugins:
+    desc: "Устанавливает protoc плагины в каталог bin"
+    cmds:
+      - |
+        [ -f {{.PROTOC_GEN_GO}} ] || {
+          echo '📦 Installing protoc-gen-go...'
+          GOBIN={{.BIN_DIR}} go install google.golang.org/protobuf/cmd/protoc-gen-go@{{.PROTOC_GEN_GO_VERSION}}
+        }
+        [ -f {{.PROTOC_GEN_GO_GRPC}} ] || {
+          echo '📦 Installing protoc-gen-go-grpc...'
+          GOBIN={{.BIN_DIR}} go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@{{.PROTOC_GEN_GO_GRPC_VERSION}}
+        }
+
+  proto:lint:
+    deps: [ install-buf, proto:install-plugins ]
+    desc: Проверка .proto-файлов на соответствие стилю
+    dir: proto
+    cmds:
+      - '{{.BUF}} lint'
+
+  proto:gen:
+    deps: [ install-buf, proto:install-plugins, proto:lint ]
+    desc: Генерация Go-кода из .proto
+    dir: proto
+    cmds:
+      - '{{.BUF}} generate'
+
+  ogen:install:
+      desc: "Скачивает ogen в папку bin"
+      cmds:
+        - |
+          [ -f {{.OGEN}} ] || {
+            mkdir -p {{.BIN_DIR}}
+            GOBIN={{.BIN_DIR}} go install github.com/ogen-go/ogen/cmd/ogen@{{.OGEN_VERSION}}
+          }
+
+  ogen:gen:
+      desc: "Генерация Go-кода из всех OpenAPI-деклараций с x-ogen"
+      deps: [ ogen:install, yq:install ]
+      cmds:
+        - |
+          find {{.OPEN_API_FILES}} -name '*.yaml' -o -name '*.yml' | while read -r file; do
+            if [ -f "$file" ] && grep -q 'x-ogen:' "$file"; then
+              echo "🚀 Generating from: $file"
+              target=$({{.YQ}} e '."x-ogen".target' "$file")
+              package=$({{.YQ}} e '."x-ogen".package' "$file")
+              echo "📁 Target: $target"
+              echo "📦 Package: $package"
+              {{.OGEN}} \
+                --target "$target" \
+                --package "$package" \
+                --clean \
+                "$file" || exit 1
+            fi
+          done
