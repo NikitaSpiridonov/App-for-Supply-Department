@@ -1,4 +1,10 @@
 version: v2
+deps:
+  - buf.build/googleapis/googleapis
+  # - buf.build/envoyproxy/protoc-gen-validate
+modules:
+  - path: inventory/v1/
+  - path: payment/v1
 lint:
   use:
     - STANDARD
