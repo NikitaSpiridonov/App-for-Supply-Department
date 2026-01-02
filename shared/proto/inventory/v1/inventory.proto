@@ -17,14 +17,16 @@ service InventoryService {
 
 // GetPartRequest
 
+// Category of the detail
 enum Category {
-    UNKNOWN = 0;
-    ENGINE = 1;
-    FUEL = 2;
-    PORTHOLE = 3;
-    WING = 4;
+    CATEGORY_UNSPECIFIED = 0;
+    CATEGORY_ENGINE = 1;
+    CATEGORY_FUEL = 2;
+    CATEGORY_PORTHOLE = 3;
+    CATEGORY_WING = 4;
 }
 
+// Dimentions of the detail
 message Dimensions {
     double length = 1;
     double width = 2;
@@ -32,12 +34,14 @@ message Dimensions {
     double weight = 4;
 }
 
+// manufacturer of the detail
 message Manufacturer {
     string name = 1;
     string country = 2;
     string website = 3;
 }
 
+// metadata of the detail
 message Value {
     string string_value = 1;
     int64 int64_value = 2;
@@ -45,6 +49,7 @@ message Value {
     bool bool_value = 4;
 }
 
+// Part of the details
 message Part {
     string uuid = 1;
     string name = 2;
@@ -60,8 +65,7 @@ message Part {
     google.protobuf.Timestamp updated_at = 12;
 }
 
-// GetPartResponse
-
+// Partsfilter for search through filter
 message Partsfilter {
     repeated string uuids = 1;
     repeated string names = 2;
@@ -70,20 +74,22 @@ message Partsfilter {
     repeated string tags = 5;
 }
 
-// -----------------------
-
+// Request for the GetPart
 message GetPartRequest {
     string uuid = 1;
 }
 
+// Response for the GetPart
 message GetPartResponse {
     Part info = 1;
 }
 
+// Request for the show of the part
 message ListPartsRequest {
     Partsfilter filter = 1;
 }
 
+// Response for the show of the part
 message ListPartsResponse {
     repeated Part parts = 1;
 }
