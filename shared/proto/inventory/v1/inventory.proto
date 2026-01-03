@@ -3,7 +3,7 @@ syntax = "proto3";
 package inventory.v1;
 
 import "google/protobuf/timestamp.proto";
-// import "validate/validate.proto";
+import "validate/validate.proto";
 
 option go_package = "github.com/NikitaSpiridonov/App-for-Supply-Department/shared/pkg/proto/inventory/v1;inventory_v1";
 
@@ -51,7 +51,7 @@ message Value {
 
 // Part of the details
 message Part {
-    string uuid = 1;
+    string uuid = 1 [(validate.rules).string.uuid = true];
     string name = 2;
     string description = 3;
     double price = 4;
@@ -76,7 +76,7 @@ message Partsfilter {
 
 // Request for the GetPart
 message GetPartRequest {
-    string uuid = 1;
+    string uuid = 1 [(validate.rules).string.uuid = true];
 }
 
 // Response for the GetPart

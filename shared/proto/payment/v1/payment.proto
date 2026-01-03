@@ -3,7 +3,7 @@ syntax = "proto3";
 package payment.v1;
 
 import "google/api/annotations.proto";
-// import "validate/validate.proto";
+import "validate/validate.proto";
 
 option go_package = "github.com/NikitaSpiridonov/App-for-Supply-Department/shared/pkg/proto/payment/v1;payment_v1";
 
@@ -30,12 +30,12 @@ message PaymentMethod {
 
 // request for the order payment with order_uuid, user_uuid
 message PayOrderRequest {
-    string order_uuid = 1;
+    string order_uuid = 1 [(validate.rules).string.uuid = true];
     string user_uuid = 2;
     PaymentMethod payment_method = 3;
 }
 
 // response or the order payment with transaction_uuid
 message PayOrderResponse {
-    string transaction_uuid = 1;
+    string transaction_uuid = 1 [(validate.rules).string.uuid = true];
 }

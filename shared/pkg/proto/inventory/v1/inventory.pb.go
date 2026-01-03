@@ -7,6 +7,7 @@
 package inventory_v1
 
 import (
+	_ "github.com/envoyproxy/protoc-gen-validate/validate"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -671,7 +672,7 @@ var File_inventory_v1_inventory_proto protoreflect.FileDescriptor
 
 const file_inventory_v1_inventory_proto_rawDesc = "" +
 	"\n" +
-	"\x1cinventory/v1/inventory.proto\x12\finventory.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"h\n" +
+	"\x1cinventory/v1/inventory.proto\x12\finventory.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17validate/validate.proto\"h\n" +
 	"\n" +
 	"Dimensions\x12\x16\n" +
 	"\x06length\x18\x01 \x01(\x01R\x06length\x12\x14\n" +
@@ -688,9 +689,9 @@ const file_inventory_v1_inventory_proto_rawDesc = "" +
 	"int64Value\x12!\n" +
 	"\fdouble_value\x18\x03 \x01(\x01R\vdoubleValue\x12\x1d\n" +
 	"\n" +
-	"bool_value\x18\x04 \x01(\bR\tboolValue\"\xd5\x04\n" +
-	"\x04Part\x12\x12\n" +
-	"\x04uuid\x18\x01 \x01(\tR\x04uuid\x12\x12\n" +
+	"bool_value\x18\x04 \x01(\bR\tboolValue\"\xdf\x04\n" +
+	"\x04Part\x12\x1c\n" +
+	"\x04uuid\x18\x01 \x01(\tB\b\xfaB\x05r\x03\xb0\x01\x01R\x04uuid\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
 	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x14\n" +
 	"\x05price\x18\x04 \x01(\x01R\x05price\x12%\n" +
@@ -717,9 +718,9 @@ const file_inventory_v1_inventory_proto_rawDesc = "" +
 	"categories\x18\x03 \x03(\x0e2\x16.inventory.v1.CategoryR\n" +
 	"categories\x127\n" +
 	"\x17manufacturers_countries\x18\x04 \x03(\tR\x16manufacturersCountries\x12\x12\n" +
-	"\x04tags\x18\x05 \x03(\tR\x04tags\"$\n" +
-	"\x0eGetPartRequest\x12\x12\n" +
-	"\x04uuid\x18\x01 \x01(\tR\x04uuid\"9\n" +
+	"\x04tags\x18\x05 \x03(\tR\x04tags\".\n" +
+	"\x0eGetPartRequest\x12\x1c\n" +
+	"\x04uuid\x18\x01 \x01(\tB\b\xfaB\x05r\x03\xb0\x01\x01R\x04uuid\"9\n" +
 	"\x0fGetPartResponse\x12&\n" +
 	"\x04info\x18\x01 \x01(\v2\x12.inventory.v1.PartR\x04info\"E\n" +
 	"\x10ListPartsRequest\x121\n" +
