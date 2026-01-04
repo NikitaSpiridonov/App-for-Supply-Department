@@ -1,12 +1,12 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "payment/v1/payment.proto",
+    "title": "inventory/v1/inventory.proto",
     "version": "version not set"
   },
   "tags": [
     {
-      "name": "PaymentService"
+      "name": "InventoryService"
     }
   ],
   "consumes": [
@@ -15,60 +15,8 @@
   "produces": [
     "application/json"
   ],
-  "paths": {
-    "/api/v1/orders/{order_uuid}/pay": {
-      "post": {
-        "summary": "PayOrder llows to pay for the order using one of the available payment methods",
-        "operationId": "PaymentService_PayOrder",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1PayOrderResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "order_uuid",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/PaymentServicePayOrderBody"
-            }
-          }
-        ],
-        "tags": [
-          "PaymentService"
-        ]
-      }
-    }
-  },
+  "paths": {},
   "definitions": {
-    "PaymentServicePayOrderBody": {
-      "type": "object",
-      "properties": {
-        "user_uuid": {
-          "type": "string"
-        },
-        "payment_method": {
-          "$ref": "#/definitions/v1PaymentMethod"
-        }
-      },
-      "title": "request for the order payment with order_uuid, user_uuid"
-    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -97,18 +45,184 @@
         }
       }
     },
-    "v1PayOrderResponse": {
+    "v1Category": {
+      "type": "string",
+      "enum": [
+        "CATEGORY_UNSPECIFIED",
+        "CATEGORY_ENGINE",
+        "CATEGORY_FUEL",
+        "CATEGORY_PORTHOLE",
+        "CATEGORY_WING"
+      ],
+      "default": "CATEGORY_UNSPECIFIED",
+      "title": "Category of the detail"
+    },
+    "v1Dimensions": {
       "type": "object",
       "properties": {
-        "transaction_uuid": {
+        "length": {
+          "type": "number",
+          "format": "double"
+        },
+        "width": {
+          "type": "number",
+          "format": "double"
+        },
+        "hight": {
+          "type": "number",
+          "format": "double"
+        },
+        "weight": {
+          "type": "number",
+          "format": "double"
+        }
+      },
+      "title": "Dimentions of the detail"
+    },
+    "v1GetPartResponse": {
+      "type": "object",
+      "properties": {
+        "info": {
+          "$ref": "#/definitions/v1Part"
+        }
+      },
+      "title": "Response for the GetPart"
+    },
+    "v1ListPartsResponse": {
+      "type": "object",
+      "properties": {
+        "parts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Part"
+          }
+        }
+      },
+      "title": "Response for the show of the part"
+    },
+    "v1Manufacturer": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "website": {
           "type": "string"
         }
       },
-      "title": "response or the order payment with transaction_uuid"
+      "title": "manufacturer of the detail"
     },
-    "v1PaymentMethod": {
+    "v1Part": {
       "type": "object",
-      "title": "Method for a pay for the order in enum"
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "price": {
+          "type": "number",
+          "format": "double"
+        },
+        "stock_quantity": {
+          "type": "string",
+          "format": "int64"
+        },
+        "category": {
+          "$ref": "#/definitions/v1Category"
+        },
+        "dimensions": {
+          "$ref": "#/definitions/v1Dimensions"
+        },
+        "manufacturer": {
+          "$ref": "#/definitions/v1Manufacturer"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/v1Value"
+          }
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "Part of the details"
+    },
+    "v1Partsfilter": {
+      "type": "object",
+      "properties": {
+        "uuids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "names": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Category"
+          }
+        },
+        "manufacturers_countries": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "Partsfilter for search through filter"
+    },
+    "v1Value": {
+      "type": "object",
+      "properties": {
+        "string_value": {
+          "type": "string"
+        },
+        "int64_value": {
+          "type": "string",
+          "format": "int64"
+        },
+        "double_value": {
+          "type": "number",
+          "format": "double"
+        },
+        "bool_value": {
+          "type": "boolean"
+        }
+      },
+      "title": "metadata of the detail"
     }
   }
 }

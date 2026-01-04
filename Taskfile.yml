@@ -27,8 +27,8 @@ vars:
   OGEN: '{{.BIN_DIR}}/ogen'
   MODULES: assembly inventory order payment platform iam notification
 
-  OPEN_API_ORDER_V1_BUNDLE: '{{.ROOT_DIR}}/shared/openapi/order/v1/order.openapi.v1.yaml'
-  OPEN_API_FILES: '{{.ROOT_DIR}}/pkg/openapi/order/v1'
+  OPEN_API_ORDER_V1: '{{.ROOT_DIR}}/shared/api/order/v1/order.openapi.v1.yaml'
+  OPEN_API_FILES: '{{.ROOT_DIR}}/shared/pkg/openapi/order/v1'
 
 
   
@@ -201,21 +201,13 @@ tasks:
           }
 
   ogen:gen:
-      desc: "Генерация Go-кода из всех OpenAPI-деклараций с x-ogen"
-      deps: [ ogen:install, yq:install ]
+      desc: "Генерация Go-кода из OpenAPI-декларации"
+      deps: [ ogen:install ]
       cmds:
         - |
-          find {{.OPEN_API_FILES}} -name '*.yaml' -o -name '*.yml' | while read -r file; do
-            if [ -f "$file" ] && grep -q 'x-ogen:' "$file"; then
-              echo "🚀 Generating from: $file"
-              target=$({{.YQ}} e '."x-ogen".target' "$file")
-              package=$({{.YQ}} e '."x-ogen".package' "$file")
-              echo "📁 Target: $target"
-              echo "📦 Package: $package"
-              {{.OGEN}} \
-                --target "$target" \
-                --package "$package" \
-                --clean \
-                "$file" || exit 1
-            fi
-          done
+          echo "Generating from file..."
+          {{.OGEN}} --target {{.OPEN_API_FILES}} --package api {{.OPEN_API_ORDER_V1}}
+      # sources:
+      #   - shared/api/order/v1/order.openapi.v1.yaml
+      # generates:
+      #   - shared/pkg/openapi/order/v1/*
