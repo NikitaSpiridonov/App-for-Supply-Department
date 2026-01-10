@@ -37,3 +37,7 @@ node_modules
 # Editor/IDE
 .idea/
 .vscode/
+
+# utils
+.task
+/proto_deps

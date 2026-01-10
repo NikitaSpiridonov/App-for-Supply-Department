@@ -38,7 +38,7 @@ type Order struct {
 
 type OrderStorage struct {
 	orders map[uuid.UUID]Order
-	mu     sync.Mutex
+	mu     sync.RWMutex
 }
 
 func newOrderStorage() *OrderStorage {
@@ -57,6 +57,10 @@ func NewOrderHandler(storage *OrderStorage) *OrderHandler {
 	}
 }
 
+func totalPriceCounter() {
+
+}
+
 func (h *OrderHandler) CreateNewOrder(ctx context.Context, req *orderV1.CreateNewOrderReq) (r orderV1.CreateNewOrderRes, _ error) {
 	orderUUID := uuid.New()
 	partUUIDs := make([]uuid.UUID, len(req.PartUuids))
@@ -64,4 +68,22 @@ func (h *OrderHandler) CreateNewOrder(ctx context.Context, req *orderV1.CreateNe
 		partUUIDs[i] = uuid.MustParse(string(pu))
 	}
 
+	h.storage.mu.RLock()
+	defer h.storage.mu.RUnlock()
+
+	order := Order{
+		user_uuid:        uuid.MustParse(string(req.UserUUID)),
+		part_uuids:       partUUIDs,
+		total_price:      req.TotalPrice,
+		transaction_uuid: nil,
+		payment_method:   nil,
+		status:           StatusPending,
+	}
+
+	h.storage.orders[orderUUID] = order
+
+	return &orderV1.CreateNewOrderCreated{
+		OrderUUID:  orderUUID.String(),
+		TotalPrice: req.TotalPrice,
+	}, nil
 }

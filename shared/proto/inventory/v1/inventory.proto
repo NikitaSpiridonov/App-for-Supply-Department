@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package inventory.v1;
 
+import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
 import "validate/validate.proto";
 
@@ -10,7 +11,12 @@ option go_package = "github.com/NikitaSpiridonov/App-for-Supply-Department/share
 // Service Inventory manages orders for delivery components
 service InventoryService {
     // Returns information of the component by its uuid
-    rpc GetPart (GetPartRequest) returns (GetPartResponse);
+    rpc GetPart (GetPartRequest) returns (GetPartResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/orders"
+            body: "*"
+        };
+    }
     // Returns list of the components by their detail information through filter
     rpc ListParts (ListPartsRequest) returns (ListPartsResponse);
 }
